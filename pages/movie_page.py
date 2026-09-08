@@ -1,4 +1,5 @@
 import allure
+from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -6,7 +7,7 @@ from pages.base_page import BasePage
 
 
 class MoviePage(BasePage):
-    WATCHLIST_BUTTON = (By.XPATH, "//span[text()='Буду смотреть']")
+    WATCHLIST_BUTTON = (By.XPATH, '//section[@data-testid="search-top-result"]//button[contains(., "Буду смотреть")]')
     WATCHLIST_ACTIVE_BUTTON = (By.XPATH, "//span[text()='В списке']")
     USER_AVATAR = (By.CSS_SELECTOR, "[data-testid='user-avatar']")
 
