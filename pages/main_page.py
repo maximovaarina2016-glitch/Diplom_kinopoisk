@@ -1,3 +1,4 @@
+from pages.base_page import BasePage
 import allure
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -5,7 +6,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.base_page import BasePage
-
 
 class MainPage(BasePage):
     SEARCH_FIELD = (By.NAME, "text")
@@ -27,6 +27,10 @@ class MainPage(BasePage):
         """Открывает главную страницу и закрывает возможные модальные окна."""
         self.driver.get(self.URL)
         self.close_auth_popup()
+
+    @property
+    def is_on_auth_page(self) -> bool:
+        return "passport.yandex.ru" in self.driver.current_url
 
     @allure.step("Ввести название фильма: {query}")
     def enter_search_query(self, query: str) -> None:
@@ -87,6 +91,6 @@ class MainPage(BasePage):
         )
     def go_to_auth(self):
         logo = self.wait.until(
-            EC.invisibility_of_element_located((By.XPATH, '//button[@data-testid="loginHeaderButton"]'))
+            EC.visibility_of_element_located((By.XPATH, '//button[@data-testid="loginHeaderButton"]'))
         )
         logo.click()
