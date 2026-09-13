@@ -8,7 +8,10 @@ from pages.base_page import BasePage
 
 
 class MoviePage(BasePage):
-    WATCHLIST_BUTTON = (By.XPATH, '//section[@data-testid="search-top-result"]//button[contains(., "Буду смотреть")]')
+    WATCHLIST_BUTTON = (
+        By.XPATH,
+        '//section[@data-testid="search-top-result"]//button[contains(., "Буду смотреть")]',
+    )
     WATCHLIST_ACTIVE_BUTTON = (By.XPATH, "//span[text()='В списке']")
     USER_AVATAR = (By.CSS_SELECTOR, "")
     AUTH_MODAL_SELECTOR = ""
@@ -21,7 +24,9 @@ class MoviePage(BasePage):
     def is_user_logged_in(self) -> bool:
         """Проверяет наличие аватара пользователя."""
         try:
-            avatar = self.driver.find_element(By.CSS_SELECTOR, self.USER_AVATAR_SELECTOR)
+            avatar = self.driver.find_element(
+                By.CSS_SELECTOR, self.USER_AVATAR_SELECTOR
+            )
             return avatar.is_displayed()
         except Exception:
             return False
@@ -30,8 +35,14 @@ class MoviePage(BasePage):
         """Ждет модальное окно входа и закрывает его, если оно появилось."""
         wait = WebDriverWait(self.driver, timeout)
         try:
-            modal = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, self.AUTH_MODAL_SELECTOR)))
-            close_btn = modal.find_element(By.CSS_SELECTOR, self.MODAL_CLOSE_SELECTOR)
+            modal = wait.until(
+                EC.visibility_of_element_located(
+                    (By.CSS_SELECTOR, self.AUTH_MODAL_SELECTOR)
+                )
+            )
+            close_btn = modal.find_element(
+                By.CSS_SELECTOR, self.MODAL_CLOSE_SELECTOR
+            )
             close_btn.click()
             # Ждем исчезновения, чтобы следующие шаги не перекрылись этим окном
             wait.until(EC.invisibility_of_element(modal))

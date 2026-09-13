@@ -61,15 +61,17 @@ def test_logo_redirects_to_homepage(main_page: MainPage) -> None:
     main_page.wait_for_results()
     main_page.go_to_home()
     assert (
-    "/main/" in main_page.driver.current_url
-    or main_page.driver.current_url.endswith("/")
+        "/main/" in main_page.driver.current_url
+        or main_page.driver.current_url.endswith("/")
     ), f"Логотип не перенаправил на главную. Текущий URL: {main_page.driver.current_url}"
 
 
 # 4. Тест авторизационного поп-апа (открытие формы входа)
 def test_open_login_form_from_main_page(main_page: MainPage) -> None:
     main_page.go_to_auth()
-    assert main_page.is_on_auth_page, f"Не попали на страницу авторизации. URL: {main_page.driver.current_url}"
+    assert (
+        main_page.is_on_auth_page
+    ), f"Не попали на страницу авторизации. URL: {main_page.driver.current_url}"
 
 
 # 5. Тест добавления фильма в список
@@ -92,8 +94,12 @@ def test_navigate_to_movie_and_check_elements(
     main_page.wait_for_results()
 
     # Нажимаем кнопку действия и закрываем окно авторизации
-    watch_btn = wait.until(EC.element_to_be_clickable(movie_page.WATCHLIST_BUTTON))
+    watch_btn = wait.until(
+        EC.element_to_be_clickable(movie_page.WATCHLIST_BUTTON)
+    )
     watch_btn.click()
 
     # Проверяем, что кнопка все еще доступна на странице после закрытия окна
-    assert main_page.is_on_auth_page, f"Не попали на страницу авторизации. URL: {main_page.driver.current_url}"
+    assert (
+        main_page.is_on_auth_page
+    ), f"Не попали на страницу авторизации. URL: {main_page.driver.current_url}"

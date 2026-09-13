@@ -7,6 +7,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.base_page import BasePage
 
+
 class MainPage(BasePage):
     SEARCH_FIELD = (By.NAME, "text")
     URL = "https://www.kinopoisk.ru/"
@@ -89,8 +90,11 @@ class MainPage(BasePage):
         self.wait.until(
             EC.invisibility_of_element_located(self.SEARCH_RESULTS_WRAPPER)
         )
+
     def go_to_auth(self):
         logo = self.wait.until(
-            EC.visibility_of_element_located((By.XPATH, '//button[@data-testid="loginHeaderButton"]'))
+            EC.visibility_of_element_located(
+                (By.XPATH, '//button[@data-testid="loginHeaderButton"]')
+            )
         )
         logo.click()

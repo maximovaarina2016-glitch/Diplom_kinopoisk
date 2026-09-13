@@ -1,4 +1,5 @@
 import allure
+import requests
 
 from .base_api_page import BaseAPIPage
 
@@ -6,45 +7,53 @@ from .base_api_page import BaseAPIPage
 class SearchAPIPage(BaseAPIPage):
     SEARCH_ENDPOINT_BY_NAME = "/api/v2.2/films"
     SEARCH_ENDPOINT_BY_ACTOR = "/api/v1/staff"
-    SEARCH_ENDPOINT_BY_DIRECTOR = "/api/v1/staff"
+    SEARCH_ENDPOINT_BY_DIRECTOR = "/api/v1/persons"
+    SEARCH_ENDPOINT_PERSONS = "/api/v1/persons"
 
-    def __init__(self, api_session): self.session = api_session
+    def __init__(self, api_session):
+        self.session = api_session
 
     @allure.step("Поиск фильма через API: {query}")
     def search_film_by_name(self, query: str) -> dict:
         """Возвращает распарсенный JSON ответа."""
-        response = self._get(self.SEARCH_ENDPOINT_BY_NAME, params={"keyword": query})
+        response = self._get(
+            self.SEARCH_ENDPOINT_BY_NAME, params={"keyword": query}
+        )
         response.raise_for_status()
-        return response.json()
+        return response.json()["items"]
 
     def search_film_by_actor(self, query: str) -> dict:
         """Возвращает распарсенный JSON ответа."""
-        response = self._get(self.SEARCH_ENDPOINT_BY_ACTOR, params={"keyword": query})
+        response = self._get(
+            self.SEARCH_ENDPOINT_BY_ACTOR, params={"keyword": query}
+        )
         response.raise_for_status()
         return response.json()
 
-    def search_film_by_director(self, query: str) -> dict:
+    def search_person_by_director(self, name_query: str) -> dict:
         """Возвращает распарсенный JSON ответа."""
-        response = self._get(self.SEARCH_ENDPOINT_BY_DIRECTOR, params={"keyword": query})
+        response = self._get(
+            self.SEARCH_ENDPOINT_PERSONS, params={"name": name_query}
+        )
+
         response.raise_for_status()
         return response.json()
 
-    def search_without_required_param(self) -> dict:
+    def search_without_required_param(self) -> requests.Response:
         """
         Делает запрос к эндпоинту /api/v1/staff БЕЗ обязательного параметра filmId, чтобы спровоцировать ошибку валидатора.
-        Возвращает объект Response, а не распарсенный JSON!
+        Возвращает ОБЪЕКТ ОТВЕТА (requests.Response). Не вызывает .json(), так как при ошибках сервер может вернуть HTML!
         """
-        response = self.SEARCH_ENDPOINT_BY_ACTOR
-        return self.session.get(response)
+        url = f"{self.BASE_URL}/api/v1/staff"  # Правильный эндпоинт
+        return self.session.get(url)
 
-
-    def search_person_by_name(self, name_query: str) -> dict:
+    def search_person_by_keyword(self, name: str) -> list[dict]:
         """
-        Ищет персону по имени через официальный эндпоинт.
-        Возвращает распарсенный JSON ответа.
+        Ищет персонал по ключевому слову через официальный эндпоинт.
+        Возвращает распарсенный JSON ответа (список персон).
         """
-
-        url = f"{self.BASE_URL}/api/v1/persons"
-        params = {"name": name_query}
-        response = self.session.get(url, params=params)
-        response.raise_for_status()  # Выбросит исключение при статусе >=400 return response.json()
+        response = self._get(
+            self.SEARCH_ENDPOINT_PERSONS, params={"name": name}
+        )
+        response.raise_for_status()
+        return response.json()["items"]
