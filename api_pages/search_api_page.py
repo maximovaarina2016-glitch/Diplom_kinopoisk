@@ -7,7 +7,6 @@ class SearchAPIPage(BaseAPIPage):
     SEARCH_ENDPOINT_BY_NAME = "/api/v2.2/films"
     SEARCH_ENDPOINT_BY_ACTOR = "/api/v1/staff"
     SEARCH_ENDPOINT_BY_DIRECTOR = "/api/v1/staff"
-    BASE_URL = "https://kinopoiskapiunofficial.tech"
 
     def __init__(self, api_session): self.session = api_session
 
@@ -30,13 +29,14 @@ class SearchAPIPage(BaseAPIPage):
         response.raise_for_status()
         return response.json()
 
-    def search_without_required_param(self, query: str) -> dict:
+    def search_without_required_param(self) -> dict:
         """
         Делает запрос к эндпоинту /api/v1/staff БЕЗ обязательного параметра filmId, чтобы спровоцировать ошибку валидатора.
         Возвращает объект Response, а не распарсенный JSON!
         """
-        url = f"{self.BASE_URL}/api/v1/staff"
-        return self._get(url)
+        response = self.SEARCH_ENDPOINT_BY_ACTOR
+        return self.session.get(response)
+
 
     def search_person_by_name(self, name_query: str) -> dict:
         """
@@ -44,7 +44,7 @@ class SearchAPIPage(BaseAPIPage):
         Возвращает распарсенный JSON ответа.
         """
 
-    url = f"{self.BASE_URL}/api/v1/persons"
-    params = {"name": name_query}
-    response = self.session.get(url, params=params)
-    response.raise_for_status()  # Выбросит исключение при статусе >=400 return response.json()
+        url = f"{self.BASE_URL}/api/v1/persons"
+        params = {"name": name_query}
+        response = self.session.get(url, params=params)
+        response.raise_for_status()  # Выбросит исключение при статусе >=400 return response.json()

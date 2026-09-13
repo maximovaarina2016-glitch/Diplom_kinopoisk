@@ -80,12 +80,12 @@ def test_staff_object_required_fields(authorized_api_session):
     """
 def test_error_on_missing_film_id(authorized_api_session):
     page = SearchAPIPage(authorized_api_session)
-    data = page.search_film_by_name(nonsense_query)
 
-    response = requests.get("https://kinopoiskapiunofficial.tech/api/v1/staff", headers=headers)
-    assert response.status_code in [400, 422]
+    response = page.search_without_required_param()
+
+    # assert response. == 400
     error_text = str(response.text).lower()
-    assert "filmid" in error_text or "required" in error_text
+    assert "filmId" in error_text or "Required" in error_text
 
 # 5. Поиск известного актёра по части имени.
 
