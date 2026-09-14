@@ -63,4 +63,4 @@
 - pip install webdriver-manager
 - pip install allure
 
-
+Ссылка на страницу проекта в Yonote: https://arina-2025.yonote.ru/doc/test-plan-avtotesty-na-python-s-otchyotom-o-testirovanii-v-diplomnaya-rabota-UtXCYswLjT
