@@ -1,13 +1,13 @@
 import allure
 import pytest
-from selenium.webdriver.common.by import By
+
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pages.main_page import MainPage
 from pages.movie_page import MoviePage
 
 
-# 1. Параметризованный тест успешного поиска
+# 1.
 @allure.feature("Поиск фильмов")
 @pytest.mark.parametrize(
     "film_query,expected_title_part",
@@ -17,6 +17,7 @@ from pages.movie_page import MoviePage
         ("Начало", "Начало"),
     ],
 )
+@allure.title ("Параметризованный тест успешного поиска")
 def test_successful_search(
     main_page: MainPage, film_query: str, expected_title_part: str
 ) -> None:
@@ -34,7 +35,8 @@ def test_successful_search(
     ), f"Ожидалось '{expected_title_part}' в заголовке, но получено '{first_title}'"
 
 
-# 2. Тест поиска несуществующего фильма
+# 2.
+@allure.title ("Тест поиска несуществующего фильма")
 @allure.feature("Поиск фильмов")
 def test_search_non_existent_film(main_page: MainPage) -> None:
     """
@@ -50,7 +52,8 @@ def test_search_non_existent_film(main_page: MainPage) -> None:
     ), "Сообщение об отсутствии результатов не появилось"
 
 
-# 3. Тест кликабельности логотипа (возврат на главную)
+# 3.
+@allure.title ("Тест кликабельности логотипа (возврат на главную")
 @allure.feature("Навигация")
 def test_logo_redirects_to_homepage(main_page: MainPage) -> None:
     """
@@ -66,7 +69,8 @@ def test_logo_redirects_to_homepage(main_page: MainPage) -> None:
     ), f"Логотип не перенаправил на главную. Текущий URL: {main_page.driver.current_url}"
 
 
-# 4. Тест авторизационного поп-апа (открытие формы входа)
+# 4.
+@allure.title ("Тест авторизационного поп-апа (открытие формы входа)")
 def test_open_login_form_from_main_page(main_page: MainPage) -> None:
     main_page.go_to_auth()
     assert (
@@ -74,8 +78,9 @@ def test_open_login_form_from_main_page(main_page: MainPage) -> None:
     ), f"Не попали на страницу авторизации. URL: {main_page.driver.current_url}"
 
 
-# 5. Тест добавления фильма в список
+# 5.
 # Используется сценарий перехода на страницу фильма и проверки базовой видимости элементов
+@allure.title ("Тест добавления фильма в список")
 @allure.feature("Списки пользователя")
 def test_navigate_to_movie_and_check_elements(
     main_page: MainPage, movie_page: MoviePage

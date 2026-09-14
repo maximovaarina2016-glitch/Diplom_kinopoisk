@@ -13,6 +13,7 @@ class SearchAPIPage(BaseAPIPage):
     def __init__(self, api_session):
         self.session = api_session
 
+
     @allure.step("Поиск фильма через API: {query}")
     def search_film_by_name(self, query: str) -> dict:
         """Возвращает распарсенный JSON ответа."""
@@ -20,7 +21,7 @@ class SearchAPIPage(BaseAPIPage):
             self.SEARCH_ENDPOINT_BY_NAME, params={"keyword": query}
         )
         response.raise_for_status()
-        return response.json()["items"]
+        return response.json()  # ["items"]
 
     def search_film_by_actor(self, query: str) -> dict:
         """Возвращает распарсенный JSON ответа."""
@@ -56,4 +57,4 @@ class SearchAPIPage(BaseAPIPage):
             self.SEARCH_ENDPOINT_PERSONS, params={"name": name}
         )
         response.raise_for_status()
-        return response.json()["items"]
+        return response.json()  # ["items"]
