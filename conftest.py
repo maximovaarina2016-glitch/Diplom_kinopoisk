@@ -11,7 +11,7 @@ from pages.movie_page import MoviePage
 
 
 @pytest.fixture(scope="function")
-def api_session() -> requests.Session:
+def api_session() -> Generator[Session, Any, None]:
     """Базовая сессия для неавторизованных запросов к API."""
     with requests.Session() as session:
         session.headers.update({"User-Agent": "QA-Automation-Bot/1.0"})
@@ -36,16 +36,6 @@ def main_page(driver) -> "MainPage":
     page = MainPage(driver)
     page.open_page()
     return page
-
-
-@pytest.fixture(scope="function")
-def api_session() -> requests.Session:
-    """
-    Базовая сессия для неавторизованных запросов к API.
-    """
-    with requests.Session() as session:
-        session.headers.update({"User-Agent": "QA-Automation-Bot/1.0"})
-        yield session
 
 
 @pytest.fixture

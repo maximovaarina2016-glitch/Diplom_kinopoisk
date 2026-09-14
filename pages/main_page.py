@@ -11,10 +11,11 @@ from pages.base_page import BasePage
 class MainPage(BasePage):
     SEARCH_FIELD = (By.NAME, "text")
     URL = "https://www.kinopoisk.ru/"
-    CLOSE_POPUP_BUTTON = (
-        By.XPATH,
-        "//button[contains(@class, 'CloseButton') and (text()='Закрыть' or ./*[name()='svg'])]",
-    )
+    CLOSE_POPUP_BUTTON = (By.CSS_SELECTOR, '[data-tid="CloseButton"]')
+    #     (
+    #     By.XPATH,
+    #     "//button[contains(@class, 'CloseButton') and (text()='Закрыть' or ./*[name()='svg'])]",
+    # )
     FIRST_SEARCH_RESULT_TITLE = (
         By.XPATH,
         '//section[@data-testid="search-top-result"]//span[contains(@class, "styles_mainTitle")]',
@@ -55,7 +56,7 @@ class MainPage(BasePage):
     @allure.step("Закрыть всплывающее окно-подсказку")
     def close_auth_popup(self) -> None:
         try:
-            popup_close_button = WebDriverWait(self.driver, 5).until(
+            popup_close_button = WebDriverWait(self.driver, 10).until(
                 EC.element_to_be_clickable(self.CLOSE_POPUP_BUTTON)
             )
             popup_close_button.click()

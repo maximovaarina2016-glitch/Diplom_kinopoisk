@@ -91,7 +91,7 @@ def test_staff_object_required_fields(authorized_api_session):
         "hamilton" in en_name or "хэмилтон" in ru_name.lower()
     ), f"Первый объект с ID={first_person['kinopoiskId']} не является персонажем с фамилией Hamilton/Hэмилтон"
 
-    # 4. Ошибка при отсутствии обязательного параметра filmId
+# 4. Ошибка при отсутствии обязательного параметра filmId
     """
     Параметр filmId обязателен.
     Если его не передать, сервер должен вернуть ошибку 400 Bad Request или 422 Unprocessable Entity.
