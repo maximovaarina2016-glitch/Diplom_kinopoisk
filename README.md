@@ -16,6 +16,11 @@
 ## Полезные ссылки
 - [Документация API](https://kinopoiskapiunofficial.tech/documentation/api/)
 
+## Команды для запуска отдельно UI и API тестов через маркеры:
+- pytest -m ui
+- pytest -m api
+- pytest
+
 # UI-тесты онлайн кинотеатра Кинопоиск
 
 ### Проект содержит автоматизированные тесты для проверки UI-функционала сайта [Кинопоиск](https://www.kinopoisk.ru/).

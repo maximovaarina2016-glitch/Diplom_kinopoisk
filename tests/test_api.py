@@ -7,6 +7,7 @@ from api_pages.search_api_page import SearchAPIPage
 
 
 # 1.
+@pytest.mark.api
 @allure.feature("API: Поиск фильмов по названию")
 @pytest.mark.parametrize(
     "film_query,expected_title_part",
@@ -43,6 +44,7 @@ def test_search_film_via_api(
 
 
 # 2.
+@pytest.mark.api
 @allure.feature("API: Негативные сценарии поиска")
 @allure.title ("Тест поиска несуществующего фильма (отрицательный сценарий)")
 def test_search_non_existent_film_via_api(
@@ -65,6 +67,8 @@ def test_search_non_existent_film_via_api(
     Проверяет наличие всех обязательных полей у первого человека в списке (обычно это режиссер или главный актер). 
     Используем фильм «Интерстеллар» (ID: 15786).
     """
+
+@pytest.mark.api
 @allure.title ("Поиск Режиссёра по ID")
 def test_staff_object_required_fields(authorized_api_session):
 
@@ -104,7 +108,7 @@ def test_staff_object_required_fields(authorized_api_session):
     Параметр filmId обязателен.
     Если его не передать, сервер должен вернуть ошибку 400 Bad Request или 422 Unprocessable Entity.
     """
-
+@pytest.mark.api
 @allure.title ("Ошибка при отсутствии обязательного параметра filmId")
 def test_error_on_missing_film_id(authorized_api_session):
     page = SearchAPIPage(authorized_api_session)
@@ -118,6 +122,7 @@ def test_error_on_missing_film_id(authorized_api_session):
 
 
 # 5.
+@pytest.mark.api
 @allure.title ("Поиск известного актёра по части имени-позитивный сценарий")
 @allure.feature("API: Поиск персонала")
 def test_search_person_positive(
@@ -146,7 +151,7 @@ def test_search_person_positive(
             f"{[p.get('nameEn') or p.get('nameRu') for p in persons_data]}"
         )
 
-
+@pytest.mark.api
 @allure.feature("API: Обработка ошибок")
 @allure.title ("Поиск известного актёра по части имени-негативный сценарий")
 def test_search_person_by_partial_name_negative(

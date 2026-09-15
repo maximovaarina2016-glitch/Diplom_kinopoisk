@@ -1,12 +1,10 @@
 import allure
 import pytest
 
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pages.main_page import MainPage
 from pages.movie_page import MoviePage
 
-
+@pytest.mark.ui
 # 1.
 @allure.feature("Поиск фильмов")
 @pytest.mark.parametrize(
@@ -36,6 +34,7 @@ def test_successful_search(
 
 
 # 2.
+@pytest.mark.ui
 @allure.title ("Тест поиска несуществующего фильма")
 @allure.feature("Поиск фильмов")
 def test_search_non_existent_film(main_page: MainPage) -> None:
@@ -53,6 +52,7 @@ def test_search_non_existent_film(main_page: MainPage) -> None:
 
 
 # 3.
+@pytest.mark.ui
 @allure.title ("Тест кликабельности логотипа (возврат на главную")
 @allure.feature("Навигация")
 def test_logo_redirects_to_homepage(main_page: MainPage) -> None:
@@ -62,25 +62,28 @@ def test_logo_redirects_to_homepage(main_page: MainPage) -> None:
     main_page.enter_search_query("матрица")
     main_page.click_search()
     main_page.wait_for_results()
+
     main_page.go_to_home()
-    assert (
-        "/main/" in main_page.driver.current_url
-        or main_page.driver.current_url.endswith("/")
-    ), f"Логотип не перенаправил на главную. Текущий URL: {main_page.driver.current_url}"
+    assert main_page.is_on_home_page(), (
+        f"Логотип не перенаправил на главную. "
+        f"Текущий URL: {main_page.current_url()}"
+    )
 
 
 # 4.
+@pytest.mark.ui
 @allure.title ("Тест авторизационного поп-апа (открытие формы входа)")
 def test_open_login_form_from_main_page(main_page: MainPage) -> None:
     main_page.go_to_auth()
     assert (
         main_page.is_on_auth_page
-    ), f"Не попали на страницу авторизации. URL: {main_page.driver.current_url}"
+    ), f"Не попали на страницу авторизации. URL: {main_page.current_url()}"
 
 
 # 5.
 # Используется сценарий перехода на страницу фильма и проверки базовой видимости элементов
-@allure.title ("Тест добавления фильма в список")
+@pytest.mark.ui
+@allure.title ("Тест добавления фильма в Избранное")
 @allure.feature("Списки пользователя")
 def test_navigate_to_movie_and_check_elements(
     main_page: MainPage, movie_page: MoviePage
@@ -89,7 +92,6 @@ def test_navigate_to_movie_and_check_elements(
     Проверяет переход на страницу фильма и наличие кнопки 'Буду смотреть'.
     Корректно обрабатывает модальное окно входа для неавторизованного пользователя.
     """
-    wait = WebDriverWait(main_page.driver, 10)
     # Закрываем появившееся модальное окно входа
     movie_page.handle_auth_popup_if_present(timeout=5)
 
@@ -99,12 +101,9 @@ def test_navigate_to_movie_and_check_elements(
     main_page.wait_for_results()
 
     # Нажимаем кнопку действия и закрываем окно авторизации
-    watch_btn = wait.until(
-        EC.element_to_be_clickable(movie_page.WATCHLIST_BUTTON)
-    )
-    watch_btn.click()
+    movie_page.click_watchlist_button()
 
     # Проверяем, что кнопка все еще доступна на странице после закрытия окна
     assert (
         main_page.is_on_auth_page
-    ), f"Не попали на страницу авторизации. URL: {main_page.driver.current_url}"
+    ), f"Не попали на страницу авторизации. URL: {main_page.current_url()}"

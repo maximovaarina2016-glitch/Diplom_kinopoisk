@@ -5,4 +5,4 @@ from selenium.webdriver.support.wait import WebDriverWait
 class BasePage:
     def __init__(self, driver: WebDriver) -> None:
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
+        self.wait = WebDriverWait(driver, 15)

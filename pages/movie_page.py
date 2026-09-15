@@ -76,4 +76,19 @@ class MoviePage(BasePage):
                 EC.visibility_of_element_located(self.USER_AVATAR)
             ).is_displayed()
         except TimeoutException:
-            return False
+            return
+
+    def click_watchlist_button(self, timeout: int = 10) -> None:
+        """
+        Дожидается кликабельности кнопки 'Буду смотреть' и кликает по ней.
+        Возвращает None; все ожидания инкапсулированы внутри.
+        """
+        WebDriverWait(self.driver, timeout).until(
+            EC.element_to_be_clickable(self.WATCHLIST_BUTTON)
+        ).click()
+
+    def wait_clickable(self, locator, timeout: int = 10):
+        return WebDriverWait(self.driver, timeout).until(
+            EC.element_to_be_clickable(locator)
+        )
+

@@ -8,7 +8,10 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 from pages.main_page import MainPage
 from pages.movie_page import MoviePage
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 @pytest.fixture(scope="function")
 def api_session() -> Generator[Session, Any, None]:
@@ -44,17 +47,20 @@ def movie_page(driver) -> "MoviePage":
 
     return MoviePage(driver)
 
+@pytest.fixture(scope="session")
+def api_key() -> str:
+    key = os.getenv("API_KEY")
+    assert key, "API_KEY не задан в .env"
+    return key
 
 @pytest.fixture(scope="function")
 def authorized_api_session(
-    api_session: requests.Session,
+    api_session: Session,
+    api_key: str,
 ) -> Generator[Session, Any, None]:
     """
     Авторизованная сессия.
-    Данные лучше выносить в переменные окружения (.env).
+    Ключ берётся из переменной окружения API_KEY (.env).
     """
-    api_session.headers.update(
-        {"X-API-KEY": "a5ddce49-228c-4386-b346-3d5819c45f55"}
-    )
-
+    api_session.headers.update({"X-API-KEY": api_key})
     yield api_session

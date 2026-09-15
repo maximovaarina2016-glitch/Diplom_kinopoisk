@@ -1,10 +1,10 @@
-from pages.base_page import BasePage
+from urllib.parse import urlparse
+
 import allure
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
+from selenium.webdriver.support import expected_conditions as EC
 from pages.base_page import BasePage
 
 
@@ -12,10 +12,7 @@ class MainPage(BasePage):
     SEARCH_FIELD = (By.NAME, "text")
     URL = "https://www.kinopoisk.ru/"
     CLOSE_POPUP_BUTTON = (By.CSS_SELECTOR, '[data-tid="CloseButton"]')
-    #     (
-    #     By.XPATH,
-    #     "//button[contains(@class, 'CloseButton') and (text()='Закрыть' or ./*[name()='svg'])]",
-    # )
+
     FIRST_SEARCH_RESULT_TITLE = (
         By.XPATH,
         '//section[@data-testid="search-top-result"]//span[contains(@class, "styles_mainTitle")]',
@@ -32,7 +29,8 @@ class MainPage(BasePage):
 
     @property
     def is_on_auth_page(self) -> bool:
-        return "passport.yandex.ru" in self.driver.current_url
+        current = self.driver.current_url
+        return "auth" in current or "passport" in current
 
     @allure.step("Ввести название фильма: {query}")
     def enter_search_query(self, query: str) -> None:
@@ -81,7 +79,7 @@ class MainPage(BasePage):
         except TimeoutException:
             return False
 
-    def go_to_home(self):
+    def go_to_home(self) -> None:
         logo = self.driver.find_element(
             By.XPATH, '//a[@data-test-id="next-link"]'
         )
@@ -92,10 +90,25 @@ class MainPage(BasePage):
             EC.invisibility_of_element_located(self.SEARCH_RESULTS_WRAPPER)
         )
 
-    def go_to_auth(self):
+    def go_to_auth(self) -> None:
         logo = self.wait.until(
             EC.visibility_of_element_located(
                 (By.XPATH, '//button[@data-testid="loginHeaderButton"]')
             )
         )
         logo.click()
+
+    def is_on_home_page(self) -> bool:
+        """
+        Проверяет, что мы на главной странице Кинопоиска.
+        Учитывает, что главная может быть как '/', так и '/main/'.
+        """
+        path = urlparse(self.driver.current_url).path
+        return path in ("/", "/main/") or path.startswith("/main/")
+
+
+    def current_url(self) -> str:
+        """
+        Возвращает текущий URL. Нужен только для сообщений об ошибках в тестах.
+        """
+        return self.driver.current_url
